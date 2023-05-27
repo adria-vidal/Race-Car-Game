@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player: MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] WheelCollider frontRight;
     [SerializeField] WheelCollider frontLeft;
@@ -25,21 +25,25 @@ public class Player: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         currentAcceleration = acceleration * Input.GetAxis("Vertical");
-        
-        if (Input.GetKey(KeyCode.Space)) {
+
+        if (Input.GetKey(KeyCode.Space))
+        {
             currentBreackForce = breackingForce;
-        } else {
+        }
+        else
+        {
             currentBreackForce = 0f;
         }
 
@@ -62,7 +66,8 @@ public class Player: MonoBehaviour
         UpdateWheel(backRight, backRightTransform);
     }
 
-    void UpdateWheel(WheelCollider col, Transform trans) {
+    void UpdateWheel(WheelCollider col, Transform trans)
+    {
         Vector3 position;
         Quaternion rotation;
         col.GetWorldPose(out position, out rotation);
@@ -70,4 +75,20 @@ public class Player: MonoBehaviour
         trans.position = position;
         trans.rotation = rotation;
     }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("verificador"))
+        {
+            LapsCount.instance.verificador = true;
+        }
+        if (other.gameObject.CompareTag("Meta") && LapsCount.instance.verificador == true)
+        {
+            LapsCount.instance.vueltas++;
+            LapsCount.instance.verificador = false;
+        }
+
+    }
+
+    
 }
