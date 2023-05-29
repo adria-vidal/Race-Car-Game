@@ -6,7 +6,7 @@ public class LapsCount: MonoBehaviour
 {
     public bool verificador = false;
     public bool meta = false;
-    public int vueltas = 0;
+    public int vueltas;
 
     public static LapsCount instance;
 
@@ -14,6 +14,7 @@ public class LapsCount: MonoBehaviour
         if (instance == null){
             instance = this;
         }
+        vueltas = 1;
     }
 
 

@@ -7,6 +7,7 @@ public class CarController : MonoBehaviour
     public Canvas canvas;
 
     public bool colisionandoConCircuito = true;
+    
 
     private void OnTriggerEnter(Collider other)
     {
