@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    
+
     [SerializeField] WheelCollider frontRight;
     [SerializeField] WheelCollider frontLeft;
     [SerializeField] WheelCollider backRight;
@@ -83,10 +84,15 @@ public class PlayerMovement : MonoBehaviour
         {
             LapsCount.instance.verificador = true;
         }
-        if (other.gameObject.CompareTag("Meta") && LapsCount.instance.verificador == true)
+        if (other.gameObject.CompareTag("Meta") && LapsCount.instance.verificador == true && LapsCount.instance.vueltas < 3)
         {
             LapsCount.instance.vueltas++;
             LapsCount.instance.verificador = false;
+        }
+        if (other.gameObject.CompareTag("Meta") && LapsCount.instance.verificador == true && LapsCount.instance.vueltas == 3)
+        {
+            Debug.Log("entra");
+            SceneManager.LoadScene("FinalRace");
         }
 
     }
