@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class CarIA : MonoBehaviour
 {
@@ -21,6 +23,15 @@ public class CarIA : MonoBehaviour
     public float frontSensorAngle = 30f;
     public bool avoid;
     public float avoidMultiplier;
+    public Rigidbody rb;
+    float movementThreshold = 0.01f; // Umbral de movimiento en el eje Z para considerar que el objeto se ha movido
+    float timeThreshold = 3f; // Tiempo en segundos para determinar si el objeto no se ha movido
+
+    float lastZPosition;// Almacena la última posición en el eje Z
+    float timer = 0f; // Temporizador para realizar el seguimiento del tiempo transcurrido
+
+
+
 
 
     private void Start()
@@ -35,6 +46,31 @@ public class CarIA : MonoBehaviour
                 nodes.Add(pathTransform[i]);
             }
         }
+    }
+    private void Update()
+    {
+        // Verificar si el objeto se ha movido en el eje Z
+        if (Mathf.Abs(gameObject.transform.position.z - lastZPosition) > movementThreshold)
+        {
+            // Reiniciar el temporizador si el objeto se ha movido
+            timer = 0f;
+        }
+        else
+        {
+            // Incrementar el temporizador si el objeto no se ha movido
+            timer += Time.deltaTime;
+
+            // Verificar si el temporizador ha alcanzado el umbral de tiempo
+            if (timer >= timeThreshold)
+            {
+                // Llamar a la función IAcar
+                gameObject.transform.rotation = Quaternion.Euler(gameObject.transform.rotation.eulerAngles.x, gameObject.transform.rotation.eulerAngles.y, 0f);
+
+            }
+        }
+
+        // Actualizar la última posición en el eje Z
+        lastZPosition = gameObject.transform.position.z;
     }
 
     private void FixedUpdate()
@@ -155,6 +191,24 @@ public class CarIA : MonoBehaviour
             wheelFrontLeft.steerAngle = maxSteerAngle * avoidMultiplier;
             wheelFrontRight.steerAngle = maxSteerAngle * avoidMultiplier;
         }
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("verificador"))
+        {
+            LapsCount.instance.verificador = true;
+        }
+        if (other.gameObject.CompareTag("Meta") && LapsCount.instance.verificador == true && LapsCount.instance.vueltas < 3)
+        {
+            LapsCount.instance.vueltas++;
+            LapsCount.instance.verificador = false;
+        }
+        if (other.gameObject.CompareTag("Meta") && LapsCount.instance.verificador == true && LapsCount.instance.vueltas == 3)
+        {
+            Debug.Log("entra");
+            SceneManager.LoadScene("FinalRace");
+        }
+
     }
 }
 
