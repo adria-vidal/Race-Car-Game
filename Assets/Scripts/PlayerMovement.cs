@@ -23,11 +23,13 @@ public class PlayerMovement : MonoBehaviour
     public float currentAcceleration = 0f;
     private float currentBreackForce = 0f;
     private float currentTurnAngle = 0f;
+    public AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
-
+ // Encuentra el componente AudioSource del objeto "SoundManager"
+        audioSource = GameObject.Find("SoundManager").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -39,6 +41,21 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         currentAcceleration = acceleration * Input.GetAxis("Vertical");
+        
+        if (Input.GetKey(KeyCode.W))
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play(); // Reproduce el sonido
+            }
+        }
+        else
+        {
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop(); // Detiene el sonido si se suelta la tecla "W"
+            }
+        }
 
         if (Input.GetKey(KeyCode.Space))
         {
